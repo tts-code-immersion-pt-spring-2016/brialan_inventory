@@ -1,2 +1,2 @@
 # brialan_inventory
-#bawse
+# you did it, you read the file
