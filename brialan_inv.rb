@@ -30,12 +30,20 @@ animes = {"berserk": 1, "fistotns": 15, "onepiece": 10000, "deathnote": -1}
 #################################
 #a method to print the inventory
 def print_inv(h)
+  slot = 0
   puts "<~~~~~~~Inventory~~~~~~~>"
-  puts "Anime\t\tQuantity"
-  h.each{|key, value| puts "#{key} \t#{value}"}
+  puts "Slot\tAnime\t\tQuantity"
+  h.each  do |key, value|
+            puts "#{slot}\t #{key} \t#{value}"
+            slot = slot + 1
+          end
   puts "<~~~~~~~~~~~~~~~~~~~~~~~>"
 end
 
+def select_item
+  print_inv(animes)
+  
+end
 ########################
 #start of user interface
 ########################
