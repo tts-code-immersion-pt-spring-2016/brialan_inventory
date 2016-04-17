@@ -15,83 +15,194 @@
 #   - change the number (quantity) of the inventory
 #   - delete the item altogether
 #   - and/or change the name of an item
-# 3. Create a new item and give te item an inventory count,
+# 3. Create a new item and give the item an inventory count,
 #     and have this item now show up in the list of items you can select.
 # 4. Loops through until the user does not want to edit the list anymore.
 
-##############
-#the inventory
-##############
-#add more to it
-animes = {"berserk": 1, "fistotns": 15, "onepiece": 10000, "deathnote": -1}
+@animes = {"berserk": 1, "fistotns": 15, "onepiece": 10000, "deathnote": -1}
+@selected_anime = ""
 
-#################################
-#methods
-#################################
-#a method to print the inventory
-def print_inv(h)
+
+def print_inv
   system "clear"
   puts "<~~~~~~~~Inventory~~~~~~~~>"
-  puts "Anime\t\tQuantity"
-  h.each {|key, value| puts "#{key} \t#{value}"}
+  @animes.each {|key, value| puts "\t#{key}"}
   puts "<~~~~~~~~~~~~~~~~~~~~~~~~~>"
 end
 
-def select_item(h)
-  print_inv(h)
-  puts "<~~~~~~~~~Select~~~~~~~~~~>"
-  puts "Which anime would you like?"
-  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~>"
-  print "Type the title to select: "
-  choice = gets.chomp.to_sym
-  puts "Selected item: #{choice}"
-  puts "Anime: (#{choice}) Quantity: (#{h[choice]})"
+def select_item
+  print_inv
+  begin
+    puts "<~~~~~~~~~Select~~~~~~~~~~>"
+    puts "Which anime would you like?"
+    puts "<~~~~~~~~~~~~~~~~~~~~~~~~~>"
+    puts "Type the title to select or (q) to quit: "
+    print "Your selection: "
+    @selected_anime = gets.chomp.to_sym
+    if @animes.has_key? @selected_anime
+      puts "Selected anime: (#{@selected_anime})"
+      select_menu
+    else
+      puts ""
+      puts "!!! The anime (#{@selected_anime}) is not found !!!"
+      puts ""
+    end
+  end until @animes.has_key? @selected_anime
+  main_menu
 end
-########################
-#start of user interface
-########################
+
+def select_menu
+  system "clear"
+  begin
+    puts "<~~~~~~~~~~~~~~~~~Select Menu~~~~~~~~~~~~~~~~~>"
+    puts "What do you want to do with (#{@selected_anime}?)"
+    puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+    puts "Type (v) to view the quantity"
+    puts "Type (c) to change the quantity"
+    puts "Type (r) to remove the anime from the inventory"
+    puts "Type (rn) to rename the anime"
+    puts "Type (q) to quit the select menu"
+    puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+
+    print "Your choice: "
+    choice = gets.chomp.downcase
+    case choice
+    when "v"
+      "You selected (view the quantity)"
+      display_quantity
+    when "c"
+      puts "You selected (change the quantity)"
+      change_quantity
+    when "r"
+      "You selected (remove an anime)"
+      remove_anime
+    when "rn"
+      "You selected (rename an anime)"
+      rename_anime
+    when "q"
+      "You selected (quit select menu)"
+      main_menu
+    else
+      puts "(#{choice}) is not a valid choice"
+    end
+  end until choice == "q"
+  main_menu
+end
+
+def display_quantity
+  if @animes[@selected_anime] == 1
+    puts "There is (#{@animes[@selected_anime]}) copy of (#{@selected_anime})"
+  else
+    puts "There are (#{@animes[@selected_anime]}) copies of (#{@selected_anime})"
+  end
+end
+
+def change_quantity
+  display_quantity
+  puts "What would you like to the quantity to be?"
+  print "New quantity: "
+  @animes[@selected_anime] = gets.chomp.to_i
+  display_quantity
+end
+
+def remove_anime
+  choice = ""
+  begin
+    puts "Are you sure you wish to remove #{@selected_anime}?"
+    print "Type (y) or (n): "
+    choice = gets.chomp.downcase
+  end until choice == "y" || choice == "n"
+  if choice == "y"
+    @animes.delete @selected_anime
+    print_inv
+    @selected_anime = ""
+    main_menu
+  else
+    puts "#{@selected_anime} will not be deleted"
+  end
+end
+
+def rename_anime
+  print "What name would you like to give #{@selected_anime}: "
+  new_anime = gets.chomp.to_sym
+  old_quantity = @animes[@selected_anime]
+  @animes.delete @selected_anime
+  @animes[new_anime] = old_quantity
+  @selected_anime = new_anime
+  print_inv
+end
+
+def add_anime
+  print "Type of the name of the anime would you like to add :"
+  new_anime = gets.chomp.to_sym
+  puts ""
+  print "Type the quantity of #{new_anime}: "
+  new_quantity = gets.chomp
+  @animes[new_anime] = new_quantity
+  print_inv
+end
+
+def quit
+  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+  puts "Thanks for visiting Brian and Alan's Anime shop!"
+  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+end
+
+def main_menu
+
+  system "clear"
+  choice = ""
+  begin
+
+    puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+    puts "Brian and Alan's Anime shop!"
+    puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+
+    puts "What can we do you for?"
+    puts "Type (p) to view our inventory"
+    puts "Type (s) to select an anime"
+    puts "Type (a) to add an anime"
+    puts "Type (q) to quit shopping"
+
+    print "Your choice: "
+    choice = gets.chop.downcase
+
+    case choice
+      when "p"
+        puts "You selected (view inventory)"
+        print_inv
+      when "s"
+        puts "You selected (select anime)"
+        select_item
+      when "a"
+        puts "You selected (add anime)"
+        add_anime
+      when "q"
+        puts "You selected (quit shopping)"
+      else
+        puts "(#{choice}) is not a valid choice"
+      end
+  end until choice == "q"
+end
+
 system "clear"
-puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
-puts "Welcome to Brian and Alan's Anime shop!"
-puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
-#loop the choice prompt until the user wants to stop
 choice = ""
 
 begin
-  puts "What can we do you for?"
-  puts "Type (p) to view our inventory"
-  puts "Type (s) to select an anime"
-  #######################
-  #put other choices here
-  #######################
-
-  puts "Type (q) to quit shopping"
-
-  #get user choice
+  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+  puts "Welcome to Brian and Alan's Anime shop!"
+  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
+  puts "Type (m) to enter the main menu"
+  puts "Type (q) to quit"
   print "Your choice: "
+  choice = gets.chomp.downcase
 
-  choice = gets.chop.downcase
-
-  #activate inventory actions based on user input
   case choice
-    when "p"
-      puts "You selected (view inventory)"
-      print_inv(animes)
-    when "s"
-      puts "You selected (select anime)"
-      select_item(animes)
-      ###############################################
-      #put a when and the code for each letter/choice
-      ###############################################
-
+    when "m"
+      main_menu
     when "q"
-      puts "You selected (quit shopping)"
-
-    #catches an invalid user choice
+      quit
     else
-      puts "That is not a valid choice"
-    end
+      puts "(#{choice}) is not a valid choice"
+  end
 end until choice == "q"
-puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
-puts "Thanks for visiting Brian and Alan's Anime shop!"
-puts "<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>"
