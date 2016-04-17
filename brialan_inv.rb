@@ -30,19 +30,22 @@ animes = {"berserk": 1, "fistotns": 15, "onepiece": 10000, "deathnote": -1}
 #################################
 #a method to print the inventory
 def print_inv(h)
-  slot = 0
-  puts "<~~~~~~~Inventory~~~~~~~>"
-  puts "Slot\tAnime\t\tQuantity"
-  h.each  do |key, value|
-            puts "#{slot}\t #{key} \t#{value}"
-            slot = slot + 1
-          end
-  puts "<~~~~~~~~~~~~~~~~~~~~~~~>"
+  system "clear"
+  puts "<~~~~~~~~Inventory~~~~~~~~>"
+  puts "Anime\t\tQuantity"
+  h.each {|key, value| puts "#{key} \t#{value}"}
+  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~>"
 end
 
-def select_item
-  print_inv(animes)
-  
+def select_item(h)
+  print_inv(h)
+  puts "<~~~~~~~~~Select~~~~~~~~~~>"
+  puts "Which anime would you like?"
+  puts "<~~~~~~~~~~~~~~~~~~~~~~~~~>"
+  print "Type the title to select: "
+  choice = gets.chomp.to_sym
+  puts "Selected item: #{choice}"
+  puts "Anime: (#{choice}) Quantity: (#{h[choice]})"
 end
 ########################
 #start of user interface
@@ -56,8 +59,8 @@ choice = ""
 
 begin
   puts "What can we do you for?"
-  puts "Type (p) view our inventory"
-
+  puts "Type (p) to view our inventory"
+  puts "Type (s) to select an anime"
   #######################
   #put other choices here
   #######################
@@ -66,6 +69,7 @@ begin
 
   #get user choice
   print "Your choice: "
+
   choice = gets.chop.downcase
 
   #activate inventory actions based on user input
@@ -73,7 +77,9 @@ begin
     when "p"
       puts "You selected (view inventory)"
       print_inv(animes)
-
+    when "s"
+      puts "You selected (select anime)"
+      select_item(animes)
       ###############################################
       #put a when and the code for each letter/choice
       ###############################################
